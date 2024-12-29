@@ -1,0 +1,144 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1c1c1c;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+header h1 {
+    font-size: 3em;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+header span {
+    color: #b0b0b0;
+}
+
+#datetime {
+    font-size: 1.2em;
+    color: #b0b0b0;
+    margin-top: 10px;
+}
+
+.weather-info {
+    background-color: #2c2c2c;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    margin-bottom: 40px;
+}
+
+.weather-details p {
+    font-size: 1.1em;
+    margin: 10px 0;
+    color: #e0e0e0;
+}
+
+.health-advice {
+    margin-top: 20px;
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #8f8f8f;
+}
+
+.chat-container {
+    background-color: #2c2c2c;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+#chatbox {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px;
+}
+
+.user-message, .bot-response {
+    transition: all 0.3s ease;
+}
+
+#chatlog {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: #5d5a5a;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    color: #393939;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#userMessage {
+    padding: 12px;
+    font-size: 1.1em;
+    width: 100%;
+    border: 1px solid #444;
+    border-radius: 12px;
+    background-color: #333;
+    color: #e0e0e0;
+    box-sizing: border-box;
+}
+
+#sendMessage {
+    background-color: #444;
+    color: #ffffff;
+    padding: 12px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#sendMessage:hover {
+    background-color: #555;
+}
+
+.user-message {
+    font-size: 1.1em;
+    color: #e6e6e6;
+    padding: 10px;
+    border-radius: 12px;
+    background-color: #323131;
+    align-self: flex-end;
+    max-width: 70%;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.bot-response {
+    font-size: 1.1em;
+    color: #66bb6a;
+    padding: 10px;
+    border-radius: 12px;
+    background-color: #444;
+    align-self: flex-start;
+    max-width: 70%;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+footer {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 1em;
+    color: #888;
+}
