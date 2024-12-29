@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Well Weather🌞</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Well Weather<span>🌞</span></h1>
+            <div id="datetime"></div>
+        </header>
+
+        <div class="weather-info" id="weather-container">
+            <div class="weather-details">
+                <p><strong>Weather:</strong> {{ weather_description }}</p>
+                <p><strong>Temperature:</strong> {{ temperature }}°C</p>
+                <p><strong>UV Index:</strong> {{ uv_index }}</p>
+                <p><strong>Air Quality Index (AQI):</strong> {{ aqi }}</p>
+                <p><strong>PM2.5:</strong> {{ pm2_5 }} µg/m³</p>
+                <p><strong>PM10:</strong> {{ pm10 }} µg/m³</p>
+            </div>
+
+            <div class="health-advice">
+                <p><strong>Advice:</strong> {{ health_advice }}</p>
+            </div>
+
+            <canvas id="tempChart"></canvas>
+        </div>
+
+        <div class="chat-container">
+            <div id="chatbox">
+                <div id="chatlog"></div>
+                <input type="text" id="userMessage" placeholder="Type your message...">
+                <button id="sendMessage">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            const dateTimeStr = now.toLocaleString('en-US', options);
+            const dateTimeElem = document.getElementById('datetime');
+            if (dateTimeElem) {
+                dateTimeElem.textContent = dateTimeStr;
+            }
+        }
+
+        function setWeatherTheme(weatherDescription) {
+            const container = document.getElementById('weather-container');
+            if (container) {
+                const normalizedDescription = weatherDescription.toLowerCase();
+                if (normalizedDescription.includes('clear')) {
+                    container.className = 'sunny';
+                } else if (normalizedDescription.includes('rain')) {
+                    container.className = 'rainy';
+                } else if (normalizedDescription.includes('cloud')) {
+                    container.className = 'cloudy';
+                } else if (normalizedDescription.includes('snow')) {
+                    container.className = 'snowy';
+                } else {
+                    container.className = '';
+                }
+            }
+        }
+
+        function renderTemperatureGraph(temperatureData) {
+            const canvas = document.getElementById('tempChart');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: temperatureData.hours,
+                        datasets: [{
+                            label: 'Temperature (°C)',
+                            data: temperatureData.temps,
+                            backgroundColor: 'rgba(11,209,234,0.2)',
+                            borderColor: 'rgb(59,176,226)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                title: {
+                                    display: true,
+                                    text: 'Temperature (°C)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Hour of the Day'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        document.getElementById('sendMessage').addEventListener('click', sendMessage);
+        document.getElementById('userMessage').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        async function sendMessage() {
+            const message = document.getElementById('userMessage').value.trim();
+            if (message === "") return;
+
+            document.getElementById('chatlog').innerHTML += `<div class="user-message">${message}</div>`;
+            document.getElementById('userMessage').value = "";
+
+            const chatlog = document.getElementById('chatlog');
+            chatlog.scrollTop = chatlog.scrollHeight;
+
+            const response = await fetch('/chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+            const botMessage = data.response || data.error;
+
+            document.getElementById('chatlog').innerHTML += `<div class="bot-response">${botMessage}</div>`;
+            chatlog.scrollTop = chatlog.scrollHeight;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+
+            const weatherDescription = "clear skies";
+            setWeatherTheme(weatherDescription);
+
+            const temperatureData = {
+                temps: [25, 26, 27, 28, 29, 30, 32, 33, 34, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21],
+                hours: ['12 AM', '1 AM', '2 AM', '3 AM', '4 AM', '5 AM', '6 AM', '7 AM', '8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM', '8 PM', '9 PM', '10 PM', '11 PM']
+            };
+            renderTemperatureGraph(temperatureData);
+        });
+    </script>
+</body>
+</html>
